@@ -13,10 +13,8 @@ const signinHandler = (config, options) => {
 
 const callbackHandler = async (event, config) => {
   const customGoogle = new Provider(config)
-  const profileMap = (response) => {
-    //console.log(response)
-
-    p = new Profile({
+  const profileMap = (response) =>
+    new Profile({
       id: response.names[0].metadata.source.id,
       //name: response.displayName,
       name: response.names ? response.names[0].displayName : null,
@@ -25,12 +23,6 @@ const callbackHandler = async (event, config) => {
       provider: 'custom-google',
       at: response.access_token
     })
-
-    console.log('custom-google')
-    console.log(p)
-
-    return p
-  }
 
   const options = {
     authorization_uri: 'https://www.googleapis.com/oauth2/v4/token',
