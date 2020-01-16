@@ -13,24 +13,34 @@ const signinHandler = (config, options) => {
 
 const callbackHandler = async (event, config) => {
   const customGoogle = new Provider(config)
-  const profileMap = (response) =>
-    new Profile({
-      id: response.id,
-      name: response.displayName,
-      email: response.emails ? response.emails[0].value : null,
+  const profileMap = (response) => {
+    //console.log(response)
+
+    p = new Profile({
+      id: response.names[0].metadata.source.id,
+      //name: response.displayName,
+      name: response.names ? response.names[0].displayName : null,
+      email: response.emailAddresses ? response.emailAddresses[0].value : null,
       picture: response.image ? response.image.url : null,
       provider: 'custom-google',
       at: response.access_token
     })
 
+    console.log('custom-google')
+    console.log(p)
+
+    return p
+  }
+
   const options = {
     authorization_uri: 'https://www.googleapis.com/oauth2/v4/token',
-    profile_uri: 'https://www.googleapis.com/plus/v1/people/me',
+    profile_uri: 'https://people.googleapis.com/v1/people/me',
     profileMap
   }
 
   return customGoogle.callback(event, options, {
-    authorization: { grant_type: 'authorization_code' }
+    authorization: { grant_type: 'authorization_code' },
+    profile: { person_fields: 'emailAddresses,names' }
   })
 }
 
