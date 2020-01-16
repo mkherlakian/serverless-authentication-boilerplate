@@ -113,21 +113,34 @@ describe('Authentication Provider', () => {
         .reply(200, {
           access_token: 'access-token-123'
         })
-
-      nock('https://www.googleapis.com')
-        .get('/plus/v1/people/me')
-        .query({ access_token: 'access-token-123' })
+//https://people.googleapis.com/v1/people/me?access_token=access-token-123&person_fields=emailAddresses,names
+      nock('https://people.googleapis.com')
+        .get('/v1/people/me')
+        .query({
+            access_token: 'access-token-123',
+            person_fields: 'emailAddresses,names'
+        })
         .reply(200, {
-          id: 'user-id-1',
-          displayName: 'Eetu Tuomala',
-          emails: [
+          names: [
+            {
+              displayName: 'Eetu Tuomala',
+              metadata: {
+                source: {
+                  id: 'user-id-1'
+                }
+              }
+            }
+          ],
+          emailAddresses: [
             {
               value: 'email@test.com'
             }
           ],
-          image: {
-            url: 'https://avatars3.githubusercontent.com/u/4726921?v=3&s=460'
-          }
+          coverPhotos: [
+            {
+              'url': 'https://avatars3.githubusercontent.com/u/4726921?v=3&s=460'
+            }
+          ]
         })
     })
 
